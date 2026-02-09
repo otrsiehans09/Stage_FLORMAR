@@ -6,11 +6,12 @@ usecaseDiagram
 
     package "Système Chatbot Sales Pro" {
         usecase "Dialoguer avec le chatbot" as UC0
-        usecase "Exprimer un besoin produit" as UC1
+        usecase "Exprimer un besoin produi:t" as UC1
         usecase "Comparer deux produits" as UC2
         usecase "Vérifier la disponibilité (Stock réel)" as UC3
         usecase "Obtenir des conseils d'usage" as UC4
         usecase "Générer une réponse fiable\n(RAG + LLM)" as UC7
+        
         usecase "Mettre à jour le catalogue\n(Ingestion documents & données)" as UC5
         usecase "Consulter les logs & analytics" as UC6
     }
