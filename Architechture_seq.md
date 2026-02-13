@@ -1,5 +1,6 @@
 ```mermaid
 
+
 sequenceDiagram
     autonumber
     actor Client as Client (Site Web)

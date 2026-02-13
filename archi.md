@@ -1,6 +1,8 @@
 ```mermaid
 
 
+
+
 graph TB
     %% FRONTEND
     subgraph "FRONTEND (Hostinger / WordPress)"
@@ -38,6 +40,7 @@ graph TB
     subgraph "OBSERVABILITY"
         LOGS[(Logs / Metrics)]
     end
+    
 
     %% FUTURE ML
     subgraph "ANALYTICS / ML (Future)"
@@ -67,3 +70,4 @@ graph TB
     %% FUTURE ML
     LOGS -.-> ML
     ML -.-> ROUTER
+
