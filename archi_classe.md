@@ -106,3 +106,4 @@ MoteurRAG --> Reponse : génère
 Chatbot --> Log : enregistre
 Administrateur --> IngestionService : utilise
 IngestionService --> Catalogue : met à jour
+
