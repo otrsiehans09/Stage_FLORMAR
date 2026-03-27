@@ -1,0 +1,141 @@
+<style>
+.tree { font-family: var(--font-mono); font-size: 13px; line-height: 1.9; color: var(--color-text-primary); padding: 1rem 0; }
+.folder { color: var(--color-text-info); font-weight: 500; cursor: pointer; }
+.folder:hover { opacity: 0.8; }
+.file { color: var(--color-text-primary); }
+.comment { color: var(--color-text-secondary); font-size: 12px; }
+.badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: 500; margin-left: 6px; vertical-align: middle; }
+.b-py { background: var(--color-background-info); color: var(--color-text-info); }
+.b-js { background: var(--color-background-warning); color: var(--color-text-warning); }
+.b-env { background: var(--color-background-danger); color: var(--color-text-danger); }
+.b-txt { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.b-liq { background: var(--color-background-success); color: var(--color-text-success); }
+.highlight { background: var(--color-background-warning); border-radius: 4px; padding: 0 4px; }
+.tooltip-box { display: none; margin: 2px 0 4px 32px; padding: 8px 12px; background: var(--color-background-secondary); border-left: 3px solid var(--color-border-info); border-radius: 0 6px 6px 0; font-size: 12px; color: var(--color-text-secondary); font-family: var(--font-sans); line-height: 1.5; }
+.tooltip-box.open { display: block; }
+.row { display: flex; align-items: baseline; gap: 0; }
+</style>
+
+<div class="tree">
+
+<div style="margin-bottom:16px; padding:10px 14px; background:var(--color-background-secondary); border-radius:var(--border-radius-md); font-family:var(--font-sans); font-size:13px; color:var(--color-text-secondary);">
+  Cliquez sur un fichier pour voir son rôle détaillé
+</div>
+
+<div class="row"><span class="folder">chatbot-shopify/</span><span class="comment" style="margin-left:8px;">— racine du projet</span></div>
+
+<div style="margin-left:20px;">
+
+  <div class="row" style="margin-top:8px;">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('env')" style="cursor:pointer;">.env <span class="badge b-env">SECRET</span></span>
+    <span class="comment" style="margin-left:8px;">— clés API (ne jamais commiter)</span>
+  </div>
+  <div class="tooltip-box" id="env">Contient toutes les clés secrètes : GROQ_API_KEY, SHOPIFY_ACCESS_TOKEN, etc. Ce fichier ne doit JAMAIS être envoyé sur GitHub. Ajoutez-le à .gitignore dès le début.</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('gitignore')" style="cursor:pointer;">.gitignore <span class="badge b-txt">config</span></span>
+    <span class="comment" style="margin-left:8px;">— fichiers à exclure de git</span>
+  </div>
+  <div class="tooltip-box" id="gitignore">Liste les fichiers que git ne doit pas suivre. Contient au minimum : .env, __pycache__/, *.pyc, venv/</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('requirements')" style="cursor:pointer;">requirements.txt <span class="badge b-txt">deps</span></span>
+    <span class="comment" style="margin-left:8px;">— dépendances Python</span>
+  </div>
+  <div class="tooltip-box" id="requirements">Liste toutes les librairies Python nécessaires. Générée avec pip freeze. Permet de réinstaller tout l'environnement avec : pip install -r requirements.txt</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('app')" style="cursor:pointer;"><span class="highlight">app.py</span> <span class="badge b-py">Python</span></span>
+    <span class="comment" style="margin-left:8px;">— point d'entrée principal</span>
+  </div>
+  <div class="tooltip-box" id="app">Fichier principal du backend FastAPI. Définit les routes HTTP (ex: POST /chat), démarre le serveur, orchestre les appels entre les modules. C'est le "chef d'orchestre" de tout le projet.</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('config')" style="cursor:pointer;">config.py <span class="badge b-py">Python</span></span>
+    <span class="comment" style="margin-left:8px;">— variables de config centralisées</span>
+  </div>
+  <div class="tooltip-box" id="config">Lit le fichier .env et expose les variables comme GROQ_API_KEY, SHOPIFY_URL, etc. Centralise toute la configuration pour ne pas la répéter dans chaque fichier. C'est ici que vous changez d'API en 2 lignes.</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('system_prompt')" style="cursor:pointer;"><span class="highlight">system_prompt.py</span> <span class="badge b-py">Python</span></span>
+    <span class="comment" style="margin-left:8px;">— system prompt du chatbot</span>
+  </div>
+  <div class="tooltip-box" id="system_prompt">Contient le system prompt complet défini à l'Étape 2. Exposé comme une variable Python réutilisable. Permet de modifier le comportement du chatbot sans toucher au reste du code.</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('groq')" style="cursor:pointer;"><span class="highlight">groq_client.py</span> <span class="badge b-py">Python</span></span>
+    <span class="comment" style="margin-left:8px;">— appels à l'API Groq</span>
+  </div>
+  <div class="tooltip-box" id="groq">Gère toute la communication avec l'API Groq (Llama 3.1). Prend en entrée : le system prompt + l'historique + le message du client. Retourne la réponse du modèle. Facilement remplaçable par un autre client (Gemini, Claude...).</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('shopify')" style="cursor:pointer;"><span class="highlight">shopify_client.py</span> <span class="badge b-py">Python</span></span>
+    <span class="comment" style="margin-left:8px;">— connexion à l'API Shopify</span>
+  </div>
+  <div class="tooltip-box" id="shopify">Communique avec l'API Shopify pour récupérer les produits, variantes, prix et stocks. Formate les données en texte clair pour les injecter dans le contexte du chatbot.</div>
+
+  <div class="row">
+    <span style="color:var(--color-text-tertiary);">├── </span>
+    <span class="file" onclick="toggle('session')" style="cursor:pointer;"><span class="highlight">session_manager.py</span> <span class="badge b-py">Python</span></span>
+    <span class="comment" style="margin-left:8px;">— mémoire des conversations</span>
+  </div>
+  <div class="tooltip-box" id="session">Maintient l'historique de chaque conversation en cours (par session_id). Garde en mémoire les derniers échanges pour que le chatbot comprenne le contexte. Réinitialisé à chaque nouvelle session.</div>
+
+  <div style="margin-top:8px;">
+    <div class="row">
+      <span style="color:var(--color-text-tertiary);">└── </span>
+      <span class="folder" onclick="toggle('theme-folder')" style="cursor:pointer;">shopify-theme/</span>
+      <span class="comment" style="margin-left:8px;">— fichiers pour le thème Shopify</span>
+    </div>
+    <div class="tooltip-box" id="theme-folder">Dossier contenant les fichiers à intégrer dans votre thème Shopify. Ces fichiers s'ajoutent à votre boutique via l'éditeur de thème Shopify.</div>
+
+    <div style="margin-left:20px;">
+      <div class="row">
+        <span style="color:var(--color-text-tertiary);">├── </span>
+        <span class="file" onclick="toggle('widget')" style="cursor:pointer;"><span class="highlight">chatbot-widget.js</span> <span class="badge b-js">JS</span></span>
+        <span class="comment" style="margin-left:8px;">— widget visible dans la boutique</span>
+      </div>
+      <div class="tooltip-box" id="widget">Le widget de chat affiché sur votre boutique Shopify. Gère l'interface utilisateur (bulle de chat, fenêtre, messages) et envoie les messages au backend Python via fetch(). S'intègre dans le thème via un snippet Liquid.</div>
+
+      <div class="row">
+        <span style="color:var(--color-text-tertiary);">└── </span>
+        <span class="file" onclick="toggle('snippet')" style="cursor:pointer;">chatbot-snippet.liquid <span class="badge b-liq">Liquid</span></span>
+        <span class="comment" style="margin-left:8px;">— inclusion dans le thème</span>
+      </div>
+      <div class="tooltip-box" id="snippet">Fichier Liquid qui charge le widget JS dans le thème Shopify. S'ajoute dans le fichier theme.liquid pour que le chatbot apparaisse sur toutes les pages de la boutique.</div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:20px; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:8px;">
+  <div style="padding:8px 12px; background:var(--color-background-secondary); border-radius:var(--border-radius-md); font-size:12px; color:var(--color-text-secondary);">
+    <span class="badge b-py">Python</span><span style="margin-left:6px;">Backend</span>
+  </div>
+  <div style="padding:8px 12px; background:var(--color-background-secondary); border-radius:var(--border-radius-md); font-size:12px; color:var(--color-text-secondary);">
+    <span class="badge b-js">JS</span><span style="margin-left:6px;">Frontend widget</span>
+  </div>
+  <div style="padding:8px 12px; background:var(--color-background-secondary); border-radius:var(--border-radius-md); font-size:12px; color:var(--color-text-secondary);">
+    <span class="badge b-liq">Liquid</span><span style="margin-left:6px;">Thème Shopify</span>
+  </div>
+  <div style="padding:8px 12px; background:var(--color-background-secondary); border-radius:var(--border-radius-md); font-size:12px; color:var(--color-text-secondary);">
+    <span class="badge b-env">SECRET</span><span style="margin-left:6px;">Ne pas commiter</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+</script>
